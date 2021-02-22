@@ -1,5 +1,5 @@
-
-const EventEmitter = require('events');
+//const EventEmitter = require('events');
+const EventEmitter = require('./events'); // Tarea 2
 
 
 // Diferencia de temperatura permitida entre la temperatura real y la ideal.
@@ -17,43 +17,42 @@ const MARGEN_ERROR = 0.3;
 //    tic
 //    muchocalor
 //    muchofrio
-class Termostato  extends EventEmitter {
+class Termostato extends EventEmitter {
 
-	constructor(habitacion) {
-		super();
+    constructor(habitacion) {
+        super();
 
-		this.habitacion = habitacion;
-	
-		// Temperatura ideal programada:
-		this.temperaturaIdeal = 16;
+        this.habitacion = habitacion;
 
-		// para cancelar el temporizador setInterval:
-		this.intervalId = null;
-	}
+        // Temperatura ideal programada:
+        this.temperaturaIdeal = 16;
 
-	indicarTemperaturaIdeal(temperaturaIdeal) {
-		this.temperaturaIdeal = temperaturaIdeal;
-	}
+        // para cancelar el temporizador setInterval:
+        this.intervalId = null;
+    }
 
-	encender() {
-		console.log('Encendiendo el termostato.');
-		clearInterval(this.intervalId);
-		this.intervalId = setInterval(() => {
-			this.emit('tic', this.habitacion.temperatura);
+    indicarTemperaturaIdeal(temperaturaIdeal) {
+        this.temperaturaIdeal = temperaturaIdeal;
+    }
 
-			if (this.habitacion.temperatura > this.temperaturaIdeal+MARGEN_ERROR) {
-				this.emit('muchocalor');
-			} else if (this.habitacion.temperatura < this.temperaturaIdeal-MARGEN_ERROR) {
-				this.emit('muchofrio');
-			}
-		}, 500);
-	}
+    encender() {
+        console.log('Encendiendo el termostato.');
+        clearInterval(this.intervalId);
+        this.intervalId = setInterval(() => {
+            this.emit('tic', this.habitacion.temperatura);
 
-	apagar() {
-		console.log('Apagando el termostato.');
-		clearInterval(this.intervalId);
-	}
+            if (this.habitacion.temperatura > this.temperaturaIdeal + MARGEN_ERROR) {
+                this.emit('muchocalor');
+            } else if (this.habitacion.temperatura < this.temperaturaIdeal - MARGEN_ERROR) {
+                this.emit('muchofrio');
+            }
+        }, 500);
+    }
+
+    apagar() {
+        console.log('Apagando el termostato.');
+        clearInterval(this.intervalId);
+    }
 }
 
 exports = module.exports = Termostato;
-
